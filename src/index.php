@@ -22,7 +22,13 @@ $finputs = array(
 );
 
 $finputs['httpsCert']->option_values = array("0");
+$finputs['httpsCert']->value = "0";
 
+$finputs['SSL']->option_values = array("on","off");
+$finputs['SSL']->value = "on";
+
+
+$finputs['usessl_cn']->value = true;
 
 $smarty->assign("finputs",$finputs);
 

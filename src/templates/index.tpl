@@ -12,8 +12,9 @@
   {form_text title="System Name" FI=$finputs.system_name}
   {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
 
-  {$httpsCert_labels[]="Default CERT"}
-  {form_select title="HTTPS Certificate" option_labels=$httpsCert_labels FI=$finputs.httpsCert}
+  {form_select title="HTTPS Certificate" label="Default CERT" FI=$finputs.httpsCert}
+
+  {form_radio title="HTTPS Enable" label="Enabled;Disabled" FI=$finputs.SSL}
   
   {form_checkbox title="Internal Domain Name" label="Use the name on SSL certificate" FI=$finputs.usessl_cn}
 
