@@ -5,7 +5,7 @@ class FormInput
 	public $name;
 	public $value;
 	public $file_path;
-	public $option_values;
+	public $option_values = array();
 	public function __construct($name, $file_path)
 	{
 		$this->name = $name;
@@ -15,7 +15,7 @@ class FormInput
 	{
 		//TODO: check
 		$this->file_path = $path;
-		
+
 		if ( file_exists($path) )
 		{
 			$this->get_file_value();

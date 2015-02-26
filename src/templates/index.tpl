@@ -9,17 +9,14 @@
 {$data['test']}
 
 <form class="form-horizontal">
-  {form_input_text label="System Name" FI=$finputs.system_name}
-  {form_input_text label="Contact Information" anno=$admin_contact_anno FI=$finputs.admin_contact_info}
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox"> Remember me
-        </label>
-      </div>
-    </div>
-  </div>
+  {form_text title="System Name" FI=$finputs.system_name}
+  {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
+
+  {$httpsCert_labels[]="Default CERT"}
+  {form_select title="HTTPS Certificate" option_labels=$httpsCert_labels FI=$finputs.httpsCert}
+  
+  {form_checkbox title="Internal Domain Name" label="Use the name on SSL certificate" FI=$finputs.usessl_cn}
+
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-default">Sign in</button>

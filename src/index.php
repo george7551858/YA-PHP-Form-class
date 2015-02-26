@@ -21,10 +21,10 @@ $finputs = array(
 	new FormInput("usessl_cn","$db_path/useSSLCN"),
 );
 
-$admin_contact_anno = 'When there is a warning of "Please contact your network administrator"';
+$finputs['httpsCert']->option_values = array("0");
+
 
 $smarty->assign("finputs",$finputs);
-$smarty->assign("admin_contact_anno",$admin_contact_anno);
 
 $smarty->assign("data",array("title"=>"cccccc","test"=>date(DATE_RFC2822)));
 
