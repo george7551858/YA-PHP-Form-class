@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>{$data['title']}</title>
+  <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -20,7 +23,7 @@
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Sign in</button>
+      <button type="submit" class="btn btn-default">Submit</button>
     </div>
   </div>
 </form>

@@ -87,7 +87,7 @@ function smarty_function_checkbox($params, $smarty)
 		}
 	}
 
-	$input_str = '<input class="form-control"';
+	$input_str = '<input ';
 	foreach ($input_attr as $_key => $_val) {
 		$input_str .=" $_key=\"$_val\"";
 	}
@@ -107,7 +107,7 @@ function smarty_function_checkbox($params, $smarty)
 	}
 
 	if( !empty($params['label']) ) {
-		$input_str = '<label>'. $input_str .' '. $params['label'] . '</label>';
+		$input_str = '<div class="checkbox"><label>'. $input_str .' '. $params['label'] . '</label></div>';
 	}
 
 	$str = <<<EOD
@@ -158,8 +158,8 @@ function smarty_function_select($params, $smarty)
 	$input_str .='>';
 
 	foreach ($options as $label => $value) {
-		$input_str.= "<option value=\"$value\" ";
-		if( $input_attr["value"] == $value) $input_str.= "selected";
+		$input_str.= "<option value=\"$value\"";
+		if( $input_attr["value"] == $value) $input_str.= " selected";
 		$input_str.= ">$label";
 		$input_str.= "</option>";
 	}
@@ -221,9 +221,9 @@ function smarty_function_radio($params, $smarty)
 
 	$input_str = "";
 	foreach ($options as $label => $value) {
-		$input_str.= "<label>";
+		$input_str.= "<label class=\"radio-inline\">";
 		$input_str.= "<input type=\"radio\" name=\"".$input_attr["name"]."\" value=\"$value\"";
-		if( $input_attr["value"] == $value) $input_str.= "checked";
+		if( $input_attr["value"] == $value) $input_str.= " checked";
 		$input_str.= ">$label";
 		$input_str.= "</label>";
 	}
