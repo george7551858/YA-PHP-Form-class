@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>{$data['title']}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body class="container">
 
 {$data['test']}
 
-<form class="form-horizontal">
+<form class="form-horizontal" method="post">
   {form_text title="System Name" FI=$finputs.system_name}
   {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
 

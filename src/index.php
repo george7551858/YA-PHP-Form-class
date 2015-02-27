@@ -10,25 +10,26 @@ if(!is_dir($db_path)) mkdir($db_path);
 
 $finputs = array(
 	'system_name' => 
-	new FormInput("system_name","$db_path/system_name"),
+		new FormInput("system_name","$db_path/system_name"),
 	'admin_contact_info' => 
-	new FormInput("admin_contact_info","$db_path/admin_contact_info"),
+		new FormInput("admin_contact_info","$db_path/admin_contact_info"),
 	'httpsCert' => 
-	new FormInput("httpsCert","$db_path/httpd_cert_idx"),
+		new FormInput_Options("httpsCert","$db_path/httpd_cert_idx",array("0")),
 	'SSL' => 
-	new FormInput("SSL","$db_path/SSL"),
+		new FormInput_Options("SSL","$db_path/SSL",array("on","off")),
 	'usessl_cn' => 
-	new FormInput("usessl_cn","$db_path/useSSLCN"),
+		new FormInput_Check("usessl_cn","$db_path/useSSLCN",array(0=>"off",1=>"on")),
 );
 
-$finputs['httpsCert']->option_values = array("0");
-$finputs['httpsCert']->value = "0";
+// print_r($finputs);
+// echo ">".$finputs['usessl_cn']->option_values["on"]."<";
 
-$finputs['SSL']->option_values = array("on","off");
-$finputs['SSL']->value = "on";
-
-
-$finputs['usessl_cn']->value = true;
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+	foreach ($finputs as $name => $finput) {
+		$finput->get_post_value();
+		$finput->write_file();
+	}
+}
 
 $smarty->assign("finputs",$finputs);
 

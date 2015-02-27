@@ -28,6 +28,9 @@ function gen_input_attr($type,$params,$forminput)
 				break;
 		}
 	}
+	if ($type === "checkbox") {
+		$attr["value"] = $forminput->option_values[1];
+	}
 	return $attr;
 }
 
@@ -88,7 +91,7 @@ function smarty_function_checkbox($params, $smarty)
 	foreach ($input_attr as $_key => $_val) {
 		$input_str .=" $_key=\"$_val\"";
 	}
-	if( $forminput->value === true ) $input_str.= " checked";
+	if( $forminput->value === 1 ) $input_str.= " checked";
 	$input_str .='>';
 
 	if( !empty($params['label']) ) {
