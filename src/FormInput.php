@@ -4,41 +4,22 @@ class FormInput
 {
 	public $name;
 	public $value;
-	public $file_path;
-	public function __construct($name, $file_path)
+	// public $file_path;
+	private $curd_handler;
+	// private $html_handler;
+	public function __construct($name, $file_path ,$curd_handler=NULL)
 	{
 		$this->name = $name;
-		$this->set_file_path($file_path);
-	}
-	public function set_file_path($path)
-	{
-		//TODO: check
-		$this->file_path = $path;
+		$this->curd_handler = ($curd_handler) ? $curd_handler : new BaseCURDHandler($file_path);
+		// $this->html_handler = ($html_handler) ? $html_handler : new BaseHTMLHandler;
 
-		if ( file_exists($path) )
-		{
-			$this->get_file_value();
-		}
-		else
-		{
-			$this->write_file();
-		}
+		$this->value = $this->curd_handler->read();
 	}
 
-	public function write_file()
+	public function save()
 	{
-		file_put_contents($this->file_path, $this->value);
-	}
-	public function get_file_value()
-	{
-		$this->value = file_get_contents($this->file_path);
-		return $this->value;
-	}
-	public function get_post_value()
-	{
-		//TODO: check
-		$this->value = @$_POST[$this->name];
-		return $this->value;
+		$this->value = $this->curd_handler->get_post_value($this->name);
+		$this->curd_handler->update($this->value);
 	}
 }
 
@@ -46,32 +27,72 @@ class FormInput
 class FormInput_Options extends FormInput
 {
 	public $option_values = array();
-	public function __construct($name, $file_path, $option_values="")
+	public function __construct($name, $file_path, $option_values,$curd_handler=NULL)
 	{
-		if($option_values) $this->option_values = $option_values;
-		parent::__construct($name, $file_path);
+		$this->option_values = $option_values;
+
+		parent::__construct($name, $file_path ,$curd_handler);
 	}
 }
 
 class FormInput_Check extends FormInput_Options
 {
-	public function get_post_value()
+	public function __construct($name, $file_path, $option_values,$curd_handler=NULL)
+	{
+		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler($file_path);
+		$curd_handler->option_values = $option_values;
+		parent::__construct($name, $file_path, $option_values,$curd_handler);
+	}
+}
+
+
+class BaseCURDHandler
+{
+	public $storage;
+	public function __construct($storage)
+	{
+		$this->storage = $storage;
+		if ( !file_exists($storage) ) $this->cread();
+	}
+	public function create()
+	{
+		touch($this->storage);
+	}
+	public function update($value)
+	{
+		file_put_contents($this->storage, $value);
+	}
+	public function read()
+	{
+		return file_get_contents($this->storage);
+	}
+	public function get_post_value($name)
 	{
 		//TODO: check
-		$value = @$_POST[$this->name];
-		$this->value = ($value === $this->option_values[1]) ? 1 : 0;
-		return $this->value;
+		return @$_POST[$name];
 	}
-	public function write_file()
+}
+
+
+class CheckboxCURDHandler extends BaseCURDHandler
+{
+	public $option_values;
+	public function update($chk_bool)
 	{
-		$value = $this->option_values[$this->value];
-		file_put_contents($this->file_path, $value);
+		$value = $this->option_values[$chk_bool];
+		file_put_contents($this->storage, $value);
 	}
-	public function get_file_value()
+	public function read()
 	{
-		$value = file_get_contents($this->file_path);
-		$this->value = ($value === $this->option_values[1]) ? 1 : 0;
-		
-		return $this->value;
+		$value = file_get_contents($this->storage);
+		$chk_bool = ($value === $this->option_values[1]) ? 1 : 0;
+		return $chk_bool;
+	}
+	public function get_post_value($name)
+	{
+		//TODO: check
+		$value = @$_POST[$name];
+		$chk_bool = ($value === $this->option_values[1]) ? 1 : 0;
+		return $chk_bool;
 	}
 }

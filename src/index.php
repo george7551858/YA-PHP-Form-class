@@ -21,13 +21,12 @@ $finputs = array(
 		new FormInput_Check("usessl_cn","$db_path/useSSLCN",array(0=>"off",1=>"on")),
 );
 
-// print_r($finputs);
+print_r($finputs);
 // echo ">".$finputs['usessl_cn']->option_values["on"]."<";
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 	foreach ($finputs as $name => $finput) {
-		$finput->get_post_value();
-		$finput->write_file();
+		$finput->save();
 	}
 }
 
