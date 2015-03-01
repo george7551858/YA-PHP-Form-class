@@ -71,11 +71,7 @@ function smarty_function_text($params, $smarty)
 
 	$input_attr = gen_input_attr("text",$params,$forminput);
 
-	$input_str = '<input class="form-control"';
-	foreach ($input_attr as $_key => $_val) {
-		$input_str .=" $_key=\"$_val\"";
-	}
-	$input_str .='>';
+	$input_str = $forminput->html($params,$input_attr);
 
 	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
 
@@ -89,19 +85,9 @@ function smarty_function_checkbox($params, $smarty)
 
 	$input_attr = gen_input_attr("checkbox",$params,$forminput);
 
-	$input_str = '<input ';
-	foreach ($input_attr as $_key => $_val) {
-		$input_str .=" $_key=\"$_val\"";
-	}
-	if( $forminput->value === 1 ) $input_str.= " checked";
-	$input_str .='>';
-
-	if( !empty($params['label']) ) {
-		$input_str = '<div class="checkbox"><label>'. $input_str .' '. $params['label'] . '</label></div>';
-	}
+	$input_str = $forminput->html($params,$input_attr);
 
 	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
-
 
 	return output($title_str, $input_str, $anno_str);
 }
@@ -113,26 +99,7 @@ function smarty_function_select($params, $smarty)
 
 	$input_attr = gen_input_attr("select",$params,$forminput);
 
-	$option_labels = explode(';', $params["label"]);
-	if (count($option_labels) !== count($forminput->option_values)) {
-	}
-
-	$options = array_combine($option_labels,$forminput->option_values);
-	unset($input_attr["option_values"]);
-
-	$input_str = '<select class="form-control"';
-	foreach ($input_attr as $_key => $_val) {
-		$input_str .=" $_key=\"$_val\"";
-	}
-	$input_str .='>';
-
-	foreach ($options as $label => $value) {
-		$input_str.= "<option value=\"$value\"";
-		if( $input_attr["value"] == $value) $input_str.= " selected";
-		$input_str.= ">$label";
-		$input_str.= "</option>";
-	}
-	$input_str.= "</select>";
+	$input_str = $forminput->html($params,$input_attr);
 
 	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
 
@@ -147,21 +114,7 @@ function smarty_function_radio($params, $smarty)
 
 	$input_attr = gen_input_attr("radio",$params,$forminput);
 
-	$option_labels = explode(';', $params["label"]);
-	if (count($option_labels) !== count($forminput->option_values)) {
-	}
-
-	$options = array_combine($option_labels,$forminput->option_values);
-	unset($input_attr["option_values"]);
-
-	$input_str = "";
-	foreach ($options as $label => $value) {
-		$input_str.= "<label class=\"radio-inline\">";
-		$input_str.= "<input type=\"radio\" name=\"".$input_attr["name"]."\" value=\"$value\"";
-		if( $input_attr["value"] == $value) $input_str.= " checked";
-		$input_str.= ">$label";
-		$input_str.= "</label>";
-	}
+	$input_str = $forminput->html($params,$input_attr);
 
 	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
 
