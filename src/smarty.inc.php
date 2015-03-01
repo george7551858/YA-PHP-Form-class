@@ -4,10 +4,10 @@ require_once '../vendor/smarty/smarty/libs/plugins/shared.escape_special_chars.p
 
 $smarty = new Smarty();
 
-$smarty->registerPlugin("function","form_text", "smarty_function_text");
-$smarty->registerPlugin("function","form_checkbox", "smarty_function_checkbox");
-$smarty->registerPlugin("function","form_select", "smarty_function_select");
-$smarty->registerPlugin("function","form_radio", "smarty_function_radio");
+$smarty->registerPlugin("function","form_text", "smarty_function_input");
+$smarty->registerPlugin("function","form_checkbox", "smarty_function_input");
+$smarty->registerPlugin("function","form_select", "smarty_function_input");
+$smarty->registerPlugin("function","form_radio", "smarty_function_input");
 $smarty->registerPlugin("function","form_submit", "smarty_function_submit");
 
 function gen_title_anno($params)
@@ -38,7 +38,7 @@ EOD;
 	return sprintf($format, $title_str, $input_str, $anno_str);
 }
 
-function smarty_function_text($params, $smarty)
+function smarty_function_input($params, $smarty)
 {
 	$forminput = $params["FI"];
 	unset($params["FI"]);
@@ -46,44 +46,6 @@ function smarty_function_text($params, $smarty)
 	$input_str = $forminput->html($params);
 
 	list($title_str, $anno_str) = gen_title_anno($params);
-
-	return output($title_str, $input_str, $anno_str);
-}
-
-function smarty_function_checkbox($params, $smarty)
-{
-	$forminput = $params["FI"];
-	unset($params["FI"]);
-
-	$input_str = $forminput->html($params);
-
-	list($title_str, $anno_str) = gen_title_anno($params);
-
-	return output($title_str, $input_str, $anno_str);
-}
-
-function smarty_function_select($params, $smarty)
-{
-	$forminput = $params["FI"];
-	unset($params["FI"]);
-
-	$input_str = $forminput->html($params);
-
-	list($title_str, $anno_str) = gen_title_anno($params);
-
-
-	return output($title_str, $input_str, $anno_str);
-}
-
-function smarty_function_radio($params, $smarty)
-{
-	$forminput = $params["FI"];
-	unset($params["FI"]);
-
-	$input_str = $forminput->html($params);
-
-	list($title_str, $anno_str) = gen_title_anno($params);
-
 
 	return output($title_str, $input_str, $anno_str);
 }
