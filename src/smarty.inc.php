@@ -10,32 +10,6 @@ $smarty->registerPlugin("function","form_select", "smarty_function_select");
 $smarty->registerPlugin("function","form_radio", "smarty_function_radio");
 $smarty->registerPlugin("function","form_submit", "smarty_function_submit");
 
-function gen_input_attr($type,$params, FormInput $forminput)
-{
-	$attr = array();
-	$attr["type"] = $type;
-	$attr["id"] = $forminput->name;
-	$attr["name"] = $forminput->name;
-	$attr["value"] = $forminput->value;
-
-	foreach ($params as $_key => $_val) {
-		switch ($_key) {
-			case "title":
-			case "anno":
-			case "label":
-			case "value":
-				break;
-			default:
-				$attr[$_key] = smarty_function_escape_special_chars($_val);
-				break;
-		}
-	}
-	if ($type === "checkbox") {
-		$attr["value"] = $forminput->option_values[1];
-	}
-	return $attr;
-}
-
 function gen_title_anno($params)
 {
 	$title_format = '<label class="col-sm-2 control-label" %s>%s</label>';
@@ -69,9 +43,7 @@ function smarty_function_text($params, $smarty)
 	$forminput = $params["FI"];
 	unset($params["FI"]);
 
-	$input_attr = gen_input_attr("text",$params,$forminput);
-
-	$input_str = $forminput->html($params,$input_attr);
+	$input_str = $forminput->html($params);
 
 	list($title_str, $anno_str) = gen_title_anno($params);
 
@@ -83,9 +55,7 @@ function smarty_function_checkbox($params, $smarty)
 	$forminput = $params["FI"];
 	unset($params["FI"]);
 
-	$input_attr = gen_input_attr("checkbox",$params,$forminput);
-
-	$input_str = $forminput->html($params,$input_attr);
+	$input_str = $forminput->html($params);
 
 	list($title_str, $anno_str) = gen_title_anno($params);
 
@@ -97,9 +67,7 @@ function smarty_function_select($params, $smarty)
 	$forminput = $params["FI"];
 	unset($params["FI"]);
 
-	$input_attr = gen_input_attr("select",$params,$forminput);
-
-	$input_str = $forminput->html($params,$input_attr);
+	$input_str = $forminput->html($params);
 
 	list($title_str, $anno_str) = gen_title_anno($params);
 
@@ -112,9 +80,7 @@ function smarty_function_radio($params, $smarty)
 	$forminput = $params["FI"];
 	unset($params["FI"]);
 
-	$input_attr = gen_input_attr("radio",$params,$forminput);
-
-	$input_str = $forminput->html($params,$input_attr);
+	$input_str = $forminput->html($params);
 
 	list($title_str, $anno_str) = gen_title_anno($params);
 

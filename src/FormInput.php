@@ -21,10 +21,10 @@ class FormInput
 		$this->value = $this->curd_handler->get_post_value($this->name);
 		$this->curd_handler->update($this->value);
 	}
-	public function html(&$params,$input_attr)
+	public function html(&$params)
 	{
 		if( ! isset($params['id']) ) $params['id'] = $this->name;
-		return $this->html_handler->output($params,$input_attr,$this->value);
+		return $this->html_handler->output($params,$this->name,$this->value);
 	}
 }
 
@@ -38,10 +38,10 @@ class FormInput_Options extends FormInput
 
 		parent::__construct($name, $file_path ,$curd_handler,$html_handler);
 	}
-	public function html(&$params,$input_attr)
+	public function html(&$params)
 	{
 		if( ! isset($params['id']) ) $params['id'] = $this->name;
-		return $this->html_handler->output($params,$input_attr,$this->value,$this->option_values);
+		return $this->html_handler->output($params,$this->name,$this->value,$this->option_values);
 	}
 }
 
@@ -128,27 +128,65 @@ class CheckboxCURDHandler extends BaseCURDHandler
 
 class BaseHTMLHandler
 {
-	function output($input_attr)
+	function escape_special_chars($string)
+	{
+		if (!is_array($string)) {
+			$string = htmlspecialchars($string, ENT_COMPAT, Smarty::$_CHARSET, false);
+		}
+
+		return $string;
+	}
+
+	function gen_input_attr($type,$params,$name,$value,$option_values="")
+	{
+		$attr = array();
+		$attr["type"] = $type;
+		$attr["name"] = $name;
+		$attr["value"] = $value;
+		if ($type === "checkbox") {
+			$attr["value"] = $option_values[1];
+		}
+
+		foreach ($params as $_key => $_val) {
+			switch ($_key) {
+				case "title":
+				case "anno":
+				case "label":
+				case "value":
+				case "checked":
+				case "selected":
+					break;
+				default:
+					$attr[$_key] = $_val;
+					break;
+			}
+		}
+
+		$ret = "";
+		foreach ($attr as $_key => $_val) {
+			$_key = $this->escape_special_chars($_key);
+			$_val = $this->escape_special_chars($_val);
+			$ret .=" $_key=\"$_val\"";
+		}
+		return $ret;
+	}
+	function output($params,$name,$value)
 	{
 		$html = '<input class="form-control"';
-		foreach ($input_attr as $_key => $_val) {
-			$html .=" $_key=\"$_val\"";
-		}
-		$html .='>';
+		$html.= $this->gen_input_attr("text",$params,$name,$value);
+		$html.= '>';
 		return $html;
 	}
 }
 
 class CheckboxHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$input_attr,$value)
+	function output($params,$name,$value,$option_values)
 	{
 		$html = '<input ';
-		foreach ($input_attr as $_key => $_val) {
-			$html .=" $_key=\"$_val\"";
-		}
+		$html.= $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
 		if( $value === 1 ) $html.= " checked";
-		$html .='>';
+		$html.= '>';
 
 		if( !empty($params['label']) ) {
 			$html = '<div class="checkbox"><label>'. $html .' '. $params['label'] . '</label></div>';
@@ -159,7 +197,7 @@ class CheckboxHTMLHandler extends BaseHTMLHandler
 
 class RadioHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$input_attr,$value,$option_values)
+	function output($params,$name,$value,$option_values)
 	{
 		$option_labels = explode(';', $params["label"]);
 		$options = array_combine($option_labels,$option_values);
@@ -167,7 +205,7 @@ class RadioHTMLHandler extends BaseHTMLHandler
 		$html = "";
 		foreach ($options as $label => $_val) {
 			$html.= "<label class=\"radio-inline\">";
-			$html.= "<input type=\"radio\" name=\"".$input_attr["name"]."\" value=\"$value\"";
+			$html.= "<input type=\"radio\" name=\"$name\" value=\"$_val\"";
 			if( $value == $_val) $html.= " checked";
 			$html.= ">$label";
 			$html.= "</label>";
@@ -178,16 +216,14 @@ class RadioHTMLHandler extends BaseHTMLHandler
 
 class SelectHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$input_attr,$value,$option_values)
+	function output($params,$name,$value,$option_values)
 	{
 		$option_labels = explode(';', $params["label"]);
 		$options = array_combine($option_labels,$option_values);
 
 		$html = '<select class="form-control"';
-		foreach ($input_attr as $_key => $_val) {
-			$html .=" $_key=\"$_val\"";
-		}
-		$html .='>';
+		$html.= $this->gen_input_attr("select",$params,$name,$value);
+		$html.= '>';
 
 		foreach ($options as $label => $_val) {
 			$html.= "<option value=\"$_val\"";
