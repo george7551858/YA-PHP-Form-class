@@ -21,8 +21,9 @@ class FormInput
 		$this->value = $this->curd_handler->get_post_value($this->name);
 		$this->curd_handler->update($this->value);
 	}
-	public function html($params,$input_attr)
+	public function html(&$params,$input_attr)
 	{
+		if( ! isset($params['id']) ) $params['id'] = $this->name;
 		return $this->html_handler->output($params,$input_attr,$this->value);
 	}
 }
@@ -37,8 +38,9 @@ class FormInput_Options extends FormInput
 
 		parent::__construct($name, $file_path ,$curd_handler,$html_handler);
 	}
-	public function html($params,$input_attr)
+	public function html(&$params,$input_attr)
 	{
+		if( ! isset($params['id']) ) $params['id'] = $this->name;
 		return $this->html_handler->output($params,$input_attr,$this->value,$this->option_values);
 	}
 }

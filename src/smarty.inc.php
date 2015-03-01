@@ -36,12 +36,12 @@ function gen_input_attr($type,$params, FormInput $forminput)
 	return $attr;
 }
 
-function gen_title_anno($params,$input_attr)
+function gen_title_anno($params)
 {
 	$title_format = '<label class="col-sm-2 control-label" %s>%s</label>';
 	$anno_format  = '<p class="help-block">%s</p>';
 
-	$title_for = (!empty($params['title']) && empty($params['label'])) ? 'for="'.$input_attr['id'].'"' :'';
+	$title_for = (!empty($params['title']) && empty($params['label'])) ? 'for="'.$params['id'].'"' :'';
 	$title_str = sprintf($title_format, $title_for, $params['title']);
 
 	$anno_str = '';
@@ -73,7 +73,7 @@ function smarty_function_text($params, $smarty)
 
 	$input_str = $forminput->html($params,$input_attr);
 
-	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
+	list($title_str, $anno_str) = gen_title_anno($params);
 
 	return output($title_str, $input_str, $anno_str);
 }
@@ -87,7 +87,7 @@ function smarty_function_checkbox($params, $smarty)
 
 	$input_str = $forminput->html($params,$input_attr);
 
-	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
+	list($title_str, $anno_str) = gen_title_anno($params);
 
 	return output($title_str, $input_str, $anno_str);
 }
@@ -101,7 +101,7 @@ function smarty_function_select($params, $smarty)
 
 	$input_str = $forminput->html($params,$input_attr);
 
-	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
+	list($title_str, $anno_str) = gen_title_anno($params);
 
 
 	return output($title_str, $input_str, $anno_str);
@@ -116,7 +116,7 @@ function smarty_function_radio($params, $smarty)
 
 	$input_str = $forminput->html($params,$input_attr);
 
-	list($title_str, $anno_str) = gen_title_anno($params,$input_attr);
+	list($title_str, $anno_str) = gen_title_anno($params);
 
 
 	return output($title_str, $input_str, $anno_str);
