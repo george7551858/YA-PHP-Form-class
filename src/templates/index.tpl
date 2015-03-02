@@ -16,8 +16,8 @@
   
 
   {assign var="STYLE" value="default"}
+  {assign var="STYLE" value="bootstrap3__h"}
   {assign var="STYLE" value="bootstrap3__v"}
-  {assign var="STYLE" value="bootstrap3__h_3:9"}
   {form_text title="System Name" FI=$finputs.system_name disabled="disabled"}
   {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
 
