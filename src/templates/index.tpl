@@ -13,7 +13,7 @@
 {$data['test']}
 
 <form class="form-horizontal" method="post">
-  {form_text title="System Name" FI=$finputs.system_name}
+  {form_text title="System Name" FI=$finputs.system_name disabled="disabled"}
   {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
 
   {form_select title="HTTPS Certificate" label="Default CERT" FI=$finputs.httpsCert}

@@ -18,7 +18,9 @@ class FormInput
 
 	public function save()
 	{
-		$this->value = $this->curd_handler->get_post_value($this->name);
+		$tmp_value = $this->curd_handler->get_post_value($this->name);
+		if( is_null($tmp_value) ) return;
+		$this->value = $tmp_value;
 		$this->curd_handler->update($this->value);
 	}
 	public function html(&$params)
@@ -96,8 +98,10 @@ class BaseCURDHandler
 	}
 	public function get_post_value($name)
 	{
-		//TODO: check
-		return @$_POST[$name];
+		if (isset($_POST[$name])) {
+			return $_POST[$name];
+		}
+		return NULL;
 	}
 }
 
@@ -118,8 +122,8 @@ class CheckboxCURDHandler extends BaseCURDHandler
 	}
 	public function get_post_value($name)
 	{
-		//TODO: check
-		$value = @$_POST[$name];
+		$value = parent::get_post_value($name);
+		if (is_null($value)) return NULL;
 		$chk_bool = ($value === $this->option_values[1]) ? 1 : 0;
 		return $chk_bool;
 	}
