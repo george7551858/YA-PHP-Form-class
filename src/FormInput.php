@@ -123,7 +123,6 @@ class CheckboxCURDHandler extends BaseCURDHandler
 	public function get_post_value($name)
 	{
 		$value = parent::get_post_value($name);
-		if (is_null($value)) return NULL;
 		$chk_bool = ($value === $this->option_values[1]) ? 1 : 0;
 		return $chk_bool;
 	}
