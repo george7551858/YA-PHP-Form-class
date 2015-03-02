@@ -1,6 +1,5 @@
 <?php
 require_once '../vendor/autoload.php';
-require_once '../vendor/smarty/smarty/libs/plugins/shared.escape_special_chars.php';
 
 $smarty = new Smarty();
 
@@ -39,7 +38,7 @@ function smarty_function_input($params, $smarty)
 
 	$forminput_style = FI_Style::create($smarty);
 
-	$input_str = $forminput->html($params);
+	$input_str = $forminput->html($params,$forminput_style);
 
 	list($title_str, $anno_str) = gen_title_anno($params,$forminput_style);
 
@@ -60,53 +59,62 @@ class FI_Style
 	public static function create($smarty)
 	{
 		$type = $smarty->getTemplateVars('STYLE');
-		$type = ($type) ? strtolower($type) : "bootstrap3__h_3:9";
+		$type = ($type) ? strtolower($type) : "default";
 
+		$default = array(
+			"title"  => '<label %s>%s</label>',
+			"anno"   => '<p class="help-block">%s</p>',
+			"output" => '<div class="label">%s %s %s</div>',
+			"text"   => '<input type="text" %s>',
+			"checkbox"=>'<label><input type="checkbox" %s>%s</label>',
+			"select" => array(
+				'wrapper' =>'<select %s>%s</select>',
+				'repeat'  =>'<option %s>%s</option>'
+			),
+			"radio"  => array(
+				'wrapper' =>'%s',
+				'repeat'  =>'<label><input type="radio" %s>%s</label>'
+			),
+			"submit" => '<button type="submit">Submit</button>'
+		);
+		$ret = array();
 		switch ($type) {
-			case "bootstrap3__h_2:10":
-				return array(
-					"title"  =>'<label class="col-sm-2 control-label" %s>%s</label>'
-					,"anno"   =>'<p class="help-block">%s</p>'
-					,"output" => <<<EOD
-<div class="form-group">
-    %s
-    <div class="col-sm-10">
-      %s %s
-    </div>
-  </div>
-EOD
-					,"submit" => <<<EOD
-<div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Submit</button>
-    </div>
-  </div>
-EOD
+			case "bootstrap3__v":
+				$ret = array(
+					"text"   => '<input type="text" class="form-control" %s>',
+					"checkbox"=>'<div class="checkbox"><label><input type="checkbox" %s>%s</label></div>',
+					"select" => array(
+						'wrapper' =>'<select class="form-control" %s>%s</select>',
+						'repeat'  =>'<option %s>%s</option>'
+					),
+					"radio"  => array(
+						'wrapper' =>'%s',
+						'repeat'  =>'<div class="radio"><label><input type="radio" %s>%s</label></div>'
+					),
+					"output" => '<div class="form-group"> %s %s %s</div>',
+					"submit" => '<button type="submit" class="btn btn-default">Submit</button>'
 				);
 				break;
 			case "bootstrap3__h_3:9":
-				return array(
-					"title"  =>'<label class="col-sm-3 control-label" %s>%s</label>'
-					,"anno"   =>'<p class="help-block">%s</p>'
-					,"output" => <<<EOD
-<div class="form-group">
-    %s
-    <div class="col-sm-9">
-      %s %s
-    </div>
-  </div>
-EOD
-					,"submit" => <<<EOD
-<div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-      <button type="submit" class="btn btn-default">Submit</button>
-    </div>
-  </div>
-EOD
+				$ret = array(
+					"text"   => '<input type="text" class="form-control" %s>',
+					"checkbox"=>'<div class="checkbox"><label><input type="checkbox" %s>%s</label></div>',
+					"select" => array(
+						'wrapper' =>'<select class="form-control" %s>%s</select>',
+						'repeat'  =>'<option %s>%s</option>'
+					),
+					"radio"  => array(
+						'wrapper' =>'%s',
+						'repeat'  =>'<label class="radio-inline"><input type="radio" %s>%s</label>'
+					),
+					"title"  => '<label class="col-sm-3 control-label" %s>%s</label>',
+					"output" => '<div class="form-group">%s<div class="col-sm-9">%s %s</div></div>',
+					"submit" => '<div class="form-group"><div class="col-sm-offset-3 col-sm-9"><button type="submit" class="btn btn-default">Submit</button></div></div>'
 				);
 				break;
 			default:
 				break;
 		}
+		return array_merge($default,$ret);
 	}
 }

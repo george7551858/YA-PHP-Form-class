@@ -14,15 +14,20 @@
 
 <form class="form-horizontal" method="post">
   
+
+  {assign var="STYLE" value="default"}
+  {assign var="STYLE" value="bootstrap3__v"}
   {assign var="STYLE" value="bootstrap3__h_3:9"}
   {form_text title="System Name" FI=$finputs.system_name disabled="disabled"}
   {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
 
-  {form_select title="HTTPS Certificate" label="Default CERT" FI=$finputs.httpsCert}
+  {form_select title="HTTPS Certificate" label="Default CERT;XXX" FI=$finputs.httpsCert}
 
   {form_radio title="HTTPS Enable" label="Enabled;Disabled" FI=$finputs.SSL}
   
   {form_checkbox title="Internal Domain Name" label="Use the name on SSL certificate" FI=$finputs.usessl_cn}
+
+  {form_checkbox title="Internal Domain Name2" FI=$finputs.usessl_cn2}
 
   {form_submit}
 </form>

@@ -23,10 +23,10 @@ class FormInput
 		$this->value = $tmp_value;
 		$this->curd_handler->update($this->value);
 	}
-	public function html(&$params)
+	public function html(&$params,$style)
 	{
 		if( ! isset($params['id']) ) $params['id'] = $this->name;
-		return $this->html_handler->output($params,$this->name,$this->value);
+		return $this->html_handler->output($params,$style,$this->name,$this->value);
 	}
 }
 
@@ -40,10 +40,10 @@ class FormInput_Options extends FormInput
 
 		parent::__construct($name, $file_path ,$curd_handler,$html_handler);
 	}
-	public function html(&$params)
+	public function html(&$params,$style)
 	{
 		if( ! isset($params['id']) ) $params['id'] = $this->name;
-		return $this->html_handler->output($params,$this->name,$this->value,$this->option_values);
+		return $this->html_handler->output($params,$style,$this->name,$this->value,$this->option_values);
 	}
 }
 
@@ -82,7 +82,7 @@ class BaseCURDHandler
 	public function __construct($storage)
 	{
 		$this->storage = $storage;
-		if ( !file_exists($storage) ) $this->cread();
+		if ( !file_exists($storage) ) $this->create();
 	}
 	public function create()
 	{
@@ -174,68 +174,71 @@ class BaseHTMLHandler
 		}
 		return $ret;
 	}
-	function output($params,$name,$value)
+	function output($params,$style,$name,$value)
 	{
-		$html = '<input class="form-control"';
-		$html.= $this->gen_input_attr("text",$params,$name,$value);
-		$html.= '>';
+		$format = $style['text'];
+		$html = sprintf($format, $this->gen_input_attr("text",$params,$name,$value));
 		return $html;
 	}
 }
 
 class CheckboxHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$name,$value,$option_values)
+	function output($params,$style,$name,$value,$option_values)
 	{
-		$html = '<input ';
-		$html.= $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
-		if( $value === 1 ) $html.= " checked";
-		$html.= '>';
+		$format = $style['checkbox'];
 
-		if( !empty($params['label']) ) {
-			$html = '<div class="checkbox"><label>'. $html .' '. $params['label'] . '</label></div>';
-		}
+		$str = $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
+		if( $value === 1 ) $str.= " checked";
+
+		$html = sprintf($format, $str, @$params['label']);
 		return $html;
 	}
 }
 
 class RadioHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$name,$value,$option_values)
+	function output($params,$style,$name,$value,$option_values)
 	{
+		$format = $style['radio'];
+
 		$option_labels = explode(';', $params["label"]);
 		$options = array_combine($option_labels,$option_values);
 
 		$html = "";
 		foreach ($options as $label => $_val) {
-			$html.= "<label class=\"radio-inline\">";
-			$html.= "<input type=\"radio\" name=\"$name\" value=\"$_val\"";
-			if( $value == $_val) $html.= " checked";
-			$html.= ">$label";
-			$html.= "</label>";
+			$str = " name=\"$name\" value=\"$_val\"";
+			if( $value == $_val) $str.= " checked";
+
+			$html.= sprintf($format["repeat"], $str, $label);
 		}
+
+		$html = sprintf($format["wrapper"], $html);
+
 		return $html;
 	}
 }
 
 class SelectHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$name,$value,$option_values)
+	function output($params,$style,$name,$value,$option_values)
 	{
+		$format = $style['select'];
+
 		$option_labels = explode(';', $params["label"]);
 		$options = array_combine($option_labels,$option_values);
 
-		$html = '<select class="form-control"';
-		$html.= $this->gen_input_attr("select",$params,$name,$value);
-		$html.= '>';
-
+		$html = "";
 		foreach ($options as $label => $_val) {
-			$html.= "<option value=\"$_val\"";
-			if( $value == $_val) $html.= " selected";
-			$html.= ">$label";
-			$html.= "</option>";
+			$str = " value=\"$_val\"";
+			if( $value == $_val) $str.= " selected";
+
+			$html.= sprintf($format["repeat"], $str, $label);
 		}
-		$html.= "</select>";
+
+		$str = $this->gen_input_attr("select",$params,$name,$value,$option_values);
+		$html = sprintf($format["wrapper"], $str, $html);
+
 		return $html;
 	}
 }

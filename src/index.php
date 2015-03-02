@@ -14,11 +14,13 @@ $finputs = array(
 	'admin_contact_info' => 
 		new FormInput("admin_contact_info","$db_path/admin_contact_info"),
 	'httpsCert' => 
-		new FormInput_Select("httpsCert","$db_path/httpd_cert_idx",array("0")),
+		new FormInput_Select("httpsCert","$db_path/httpd_cert_idx",array("0","1")),
 	'SSL' => 
 		new FormInput_Radio("SSL","$db_path/SSL",array("on","off")),
 	'usessl_cn' => 
 		new FormInput_Check("usessl_cn","$db_path/useSSLCN",array(0=>"off",1=>"on")),
+	'usessl_cn2' => 
+		new FormInput_Check("usessl_cn2","$db_path/useSSLCN2",array(0=>"off",1=>"on")),
 );
 
 // print_r($finputs);
