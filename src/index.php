@@ -31,29 +31,29 @@ class SuspendMessageCURDHandler extends BaseCURDHandler
 
 $finputs = array(
 	'system_name' => 
-		new FormInput("system_name","$db_path/system_name"),
+		new FormInput_Text("system_name","$db_path/system_name"),
 	'admin_contact_info' => 
-		new FormInput("admin_contact_info","$db_path/admin_contact_info"),
+		new FormInput_Text("admin_contact_info","$db_path/admin_contact_info"),
 	'httpsCert' => 
 		new FormInput_Select("httpsCert","$db_path/httpd_cert_idx",array("Default CERT"=>"0","AAA"=>"1")),
 	'SSL' => 
 		new FormInput_Radio("SSL","$db_path/SSL",array("Enabled","Disabled","Secure")),
 	'useSSLCN' => 
-		new FormInput_Check("useSSLCN","$db_path/useSSLCN",array(0=>"Disabled",1=>"Enabled")),
+		new FormInput_Checkbox("useSSLCN","$db_path/useSSLCN",array(0=>"Disabled",1=>"Enabled")),
 	'device_name' => 
-		new FormInput("device_name","$db_path/device_name"),
+		new FormInput_Text("device_name","$db_path/device_name"),
 	'HOMEPAGE_en' => 
 		new FormInput_Radio("HOMEPAGE_en","$db_path/homepage_redirect_enable",array("Enabled","Disabled","None")),
 	'succeed_page' => 
-		new FormInput("succeed_page","$db_path/succeed_page"),
+		new FormInput_Text("succeed_page","$db_path/succeed_page"),
 	'Skip_portal_popup' => 
-		new FormInput("Skip_portal_popup","$db_path/Skip_portal_popup"),
+		new FormInput_Text("Skip_portal_popup","$db_path/Skip_portal_popup"),
 	'billlog_ip' => 
-		new FormInput("billlog_ip","$db_path/billlog_ip"),
+		new FormInput_Text("billlog_ip","$db_path/billlog_ip"),
 	'SNMP_en' => 
 		new FormInput_Radio("SNMP_en","$db_path/snmp/snmp_server",array("Enabled","Disabled")),
 	'suspend_message' => 
-		new FormInput("suspend_message",array("$db_path/vlan/suspend_message","$db_path/config/suspend_page.html"),new SuspendMessageCURDHandler),
+		new FormInput_Text("suspend_message",array("$db_path/vlan/suspend_message","$db_path/config/suspend_page.html"),new SuspendMessageCURDHandler),
 );
 
 
