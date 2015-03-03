@@ -8,27 +8,63 @@ $db_path = sys_get_temp_dir();
 $db_path .= DIRECTORY_SEPARATOR . 'db';
 if(!is_dir($db_path)) mkdir($db_path);
 
+class SuspendMessageCURDHandler extends BaseCURDHandler
+{
+	public function init($storage)
+	{
+		if(!$storage) return;
+
+		foreach ($storage as $s) {
+			if ( !file_exists($s) ) $this->create($s);
+		}
+		$this->storage = $storage[0];
+		$this->storage2 = $storage[1];
+		return $this->read();
+	}
+	public function update($value)
+	{
+		file_put_contents($this->storage, $value);
+		file_put_contents($this->storage2, "<HTML>\n<BODY>\n".$value."\n</BODY>\n<HTML>");
+	}
+}
+
+
 $finputs = array(
 	'system_name' => 
 		new FormInput("system_name","$db_path/system_name"),
 	'admin_contact_info' => 
 		new FormInput("admin_contact_info","$db_path/admin_contact_info"),
 	'httpsCert' => 
-		new FormInput_Select("httpsCert","$db_path/httpd_cert_idx",array("0","1")),
+		new FormInput_Select("httpsCert","$db_path/httpd_cert_idx",array("Default CERT"=>"0","AAA"=>"1")),
 	'SSL' => 
-		new FormInput_Radio("SSL","$db_path/SSL",array("on","off")),
-	'usessl_cn' => 
-		new FormInput_Check("usessl_cn","$db_path/useSSLCN",array(0=>"off",1=>"on")),
-	'usessl_cn2' => 
-		new FormInput_Check("usessl_cn2","$db_path/useSSLCN2",array(0=>"off",1=>"on")),
-	'usessl_cn3' => 
-		new FormInput_Check("usessl_cn3","$db_path/useSSLCN3",array(0=>"off",1=>"on")),
+		new FormInput_Radio("SSL","$db_path/SSL",array("Enabled","Disabled","Secure")),
+	'useSSLCN' => 
+		new FormInput_Check("useSSLCN","$db_path/useSSLCN",array(0=>"Disabled",1=>"Enabled")),
+	'device_name' => 
+		new FormInput("device_name","$db_path/device_name"),
+	'HOMEPAGE_en' => 
+		new FormInput_Radio("HOMEPAGE_en","$db_path/homepage_redirect_enable",array("Enabled","Disabled","None")),
+	'succeed_page' => 
+		new FormInput("succeed_page","$db_path/succeed_page"),
+	'Skip_portal_popup' => 
+		new FormInput("Skip_portal_popup","$db_path/Skip_portal_popup"),
+	'billlog_ip' => 
+		new FormInput("billlog_ip","$db_path/billlog_ip"),
+	'SNMP_en' => 
+		new FormInput_Radio("SNMP_en","$db_path/snmp/snmp_server",array("Enabled","Disabled")),
+	'suspend_message' => 
+		new FormInput("suspend_message",array("$db_path/vlan/suspend_message","$db_path/config/suspend_page.html"),new SuspendMessageCURDHandler),
 );
+
+
 
 // print_r($finputs);
 // echo ">".$finputs['usessl_cn']->option_values["on"]."<";
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
+	foreach ($finputs as $name => $finput) {
+		$finput->load_post();
+	}
 	foreach ($finputs as $name => $finput) {
 		$finput->save();
 	}

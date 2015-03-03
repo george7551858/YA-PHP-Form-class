@@ -17,17 +17,25 @@
   {assign var="STYLE" value="bootstrap3__v"}
   {assign var="STYLE" value="bootstrap3__h"}
 
-  {form_text title="System Name" FI=$finputs.system_name disabled="disabled"}
-  {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
+  {form_text     title="System Name" FI=$finputs.system_name}
+  {form_text     title="Contact Information" anno='When there is a warning of "Please contact your network administrator"' FI=$finputs.admin_contact_info}
 
-  {form_select title="HTTPS Certificate" label="Default CERT;XXX" FI=$finputs.httpsCert}
+  {form_select   title="HTTPS Certificate" label="Default CERT" FI=$finputs.httpsCert}
 
-  {form_radio title="HTTPS Enable" label="Enabled;Disabled" FI=$finputs.SSL}
-  
-  {form_checkbox title="Internal Domain Name" label="Use the name on SSL certificate" FI=$finputs.usessl_cn}
+  {form_radio    title="HTTPS Enable" label="Enable;Disable;Enable(Secure)" FI=$finputs.SSL}
 
-  {form_checkbox title="Internal Domain Name2" FI=$finputs.usessl_cn2}
-  {form_checkbox label="Internal Domain Name3" FI=$finputs.usessl_cn3}
+  {form_checkbox title="Internal Domain Name" label="Use the name on SSL certificate" FI=$finputs.useSSLCN}
+  {form_text     FI=$finputs.device_name disabled="disabled"}
+
+  {form_radio    title="Portal URL" FI=$finputs.HOMEPAGE_en label="Specific;Original;None"}
+  {form_text     anno='(e.g. http://www.example.com)'  FI=$finputs.succeed_page}
+  {form_text     anno='(e.g. IEMobile/7.0,XBLWP7, separate by comma)'  FI=$finputs.Skip_portal_popup placeholder='Exceptions (User Agent)'}
+
+  {form_text     title="User Log Access" FI=$finputs.billlog_ip placeholder='Enter IP Address Here'}
+
+  {form_radio    title="SNMP" label="Enable;Disable" FI=$finputs.SNMP_en}
+
+  {form_text     title="Suspend Warning Message " FI=$finputs.suspend_message}
 
   {form_submit}
 </form>

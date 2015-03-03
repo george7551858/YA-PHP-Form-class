@@ -9,18 +9,22 @@ class FormInput
 	public function __construct($name, $file_path ,$curd_handler=NULL,$html_handler=NULL)
 	{
 		$this->name = $name;
-		$this->curd_handler = ($curd_handler) ? $curd_handler : new BaseCURDHandler($file_path);
+		$this->curd_handler = ($curd_handler) ? $curd_handler : new BaseCURDHandler;
 		$this->html_handler = ($html_handler) ? $html_handler : new BaseHTMLHandler;
 
-		$this->value = $this->curd_handler->read();
+		$this->value = $this->curd_handler->init($file_path);
 	}
 
-	public function save()
+	public function load_post()
 	{
 		$tmp_value = $this->curd_handler->get_post_value($this->name);
 		if( is_null($tmp_value) ) return;
 		$this->value = $tmp_value;
-		$this->curd_handler->update($this->value);
+	}
+	public function save($value=NULL)
+	{
+		if( is_null($value) ) $value = $this->value;
+		$this->curd_handler->update($value);
 	}
 	public function html(&$params,$style)
 	{
@@ -78,14 +82,18 @@ class FormInput_Select extends FormInput_Options
 class BaseCURDHandler
 {
 	public $storage;
-	public function __construct($storage)
+	public function init($storage="")
 	{
+		if(!$storage) return;
 		$this->storage = $storage;
-		if ( !file_exists($storage) ) $this->create();
+		if ( !file_exists($this->storage) ) $this->create();
+		return $this->read();
 	}
-	public function create()
+	public function create($storage=NULL)
 	{
-		touch($this->storage);
+		if (!$storage) $storage = $this->storage;
+		mkdir(dirname($storage), 0755, true);
+		touch($storage);
 	}
 	public function update($value)
 	{
@@ -204,8 +212,11 @@ class RadioHTMLHandler extends BaseHTMLHandler
 	{
 		$format = $style['radio'];
 
-		$option_labels = explode(';', $params["label"]);
-		$options = array_combine($option_labels,$option_values);
+		$options = $option_values;
+		$option_labels = explode(';', @$params["label"]);
+		if( count($option_labels) === count($option_values)) {
+			$options = array_combine($option_labels,$option_values);
+		}
 
 		$html = '';
 		$name = $this->escape_special_chars($name);
@@ -230,8 +241,11 @@ class SelectHTMLHandler extends BaseHTMLHandler
 	{
 		$format = $style['select'];
 
-		$option_labels = explode(';', $params["label"]);
-		$options = array_combine($option_labels,$option_values);
+		$options = $option_values;
+		$option_labels = explode(';', @$params["label"]);
+		if( count($option_labels) === count($option_values)) {
+			$options = array_combine($option_labels,$option_values);
+		}
 
 		$html = "";
 		foreach ($options as $label => $_val) {
