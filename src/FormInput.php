@@ -66,7 +66,7 @@ class FormInput_Checkbox extends FormInput_Options
 {
 	public function __construct($name, $file_path, $option_values,$curd_handler=NULL,$html_handler=NULL)
 	{
-		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler($file_path);
+		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler;
 		$curd_handler->option_values = $option_values;
 		$html_handler = ($html_handler) ? $html_handler : new CheckboxHTMLHandler;
 		parent::__construct($name, $file_path, $option_values,$curd_handler,$html_handler);
