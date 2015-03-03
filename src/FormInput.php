@@ -4,7 +4,6 @@ class FormInput
 {
 	public $name;
 	public $value;
-	// public $file_path;
 	protected $curd_handler;
 	protected $html_handler;
 	public function __construct($name, $file_path ,$curd_handler=NULL,$html_handler=NULL)
@@ -134,7 +133,7 @@ class BaseHTMLHandler
 	function escape_special_chars($string)
 	{
 		if (!is_array($string)) {
-			$string = htmlspecialchars($string, ENT_COMPAT, Smarty::$_CHARSET, false);
+			$string = htmlspecialchars($string, ENT_COMPAT, 'UTF-8', false);
 		}
 
 		return $string;
@@ -143,11 +142,13 @@ class BaseHTMLHandler
 	function gen_input_attr($type,$params,$name,$value,$option_values="")
 	{
 		$attr = array();
-		$attr["type"] = $type;
 		$attr["name"] = $name;
-		$attr["value"] = $value;
+		
 		if ($type === "checkbox") {
 			$attr["value"] = $option_values[1];
+		}
+		else if ($type === "text") {
+			$attr["value"] = $value;
 		}
 
 		foreach ($params as $_key => $_val) {
@@ -176,7 +177,8 @@ class BaseHTMLHandler
 	function output($params,$style,$name,$value)
 	{
 		$format = $style['text'];
-		$html = sprintf($format, $this->gen_input_attr("text",$params,$name,$value));
+		$attr = $this->gen_input_attr("text",$params,$name,$value);
+		$html = sprintf($format, $attr);
 		return $html;
 	}
 }
@@ -187,10 +189,11 @@ class CheckboxHTMLHandler extends BaseHTMLHandler
 	{
 		$format = $style['checkbox'];
 
-		$str = $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
-		if( $value === 1 ) $str.= " checked";
+		$attr = $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
+		if( $value === 1 ) $attr.= " checked";
 
-		$html = sprintf($format, $str, @$params['label']);
+		$label = $this->escape_special_chars(@$params['label']);
+		$html = sprintf($format, $attr, $label);
 		return $html;
 	}
 }
@@ -204,11 +207,14 @@ class RadioHTMLHandler extends BaseHTMLHandler
 		$option_labels = explode(';', $params["label"]);
 		$options = array_combine($option_labels,$option_values);
 
-		$html = "";
+		$html = '';
+		$name = $this->escape_special_chars($name);
 		foreach ($options as $label => $_val) {
-			$str = " name=\"$name\" value=\"$_val\"";
+			$str = '';
+			$str.= ' name="'.$name.'"';
+			$str.= ' value="'.$this->escape_special_chars($_val).'"';
 			if( $value == $_val) $str.= " checked";
-
+			$label = $this->escape_special_chars($label);
 			$html.= sprintf($format["repeat"], $str, $label);
 		}
 
@@ -229,14 +235,14 @@ class SelectHTMLHandler extends BaseHTMLHandler
 
 		$html = "";
 		foreach ($options as $label => $_val) {
-			$str = " value=\"$_val\"";
+			$str = ' value="'.$this->escape_special_chars($_val).'"';
 			if( $value == $_val) $str.= " selected";
-
+			$label = $this->escape_special_chars($label);
 			$html.= sprintf($format["repeat"], $str, $label);
 		}
 
-		$str = $this->gen_input_attr("select",$params,$name,$value,$option_values);
-		$html = sprintf($format["wrapper"], $str, $html);
+		$attr = $this->gen_input_attr("select",$params,$name,$value,$option_values);
+		$html = sprintf($format["wrapper"], $attr, $html);
 
 		return $html;
 	}

@@ -21,6 +21,8 @@ $finputs = array(
 		new FormInput_Check("usessl_cn","$db_path/useSSLCN",array(0=>"off",1=>"on")),
 	'usessl_cn2' => 
 		new FormInput_Check("usessl_cn2","$db_path/useSSLCN2",array(0=>"off",1=>"on")),
+	'usessl_cn3' => 
+		new FormInput_Check("usessl_cn3","$db_path/useSSLCN3",array(0=>"off",1=>"on")),
 );
 
 // print_r($finputs);

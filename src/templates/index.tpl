@@ -13,11 +13,10 @@
 {$data['test']}
 
 <form class="form-horizontal" method="post">
-  
-
   {assign var="STYLE" value="default"}
-  {assign var="STYLE" value="bootstrap3__h"}
   {assign var="STYLE" value="bootstrap3__v"}
+  {assign var="STYLE" value="bootstrap3__h"}
+
   {form_text title="System Name" FI=$finputs.system_name disabled="disabled"}
   {form_text title="Contact Information" anno="When there is a warning of 'Please contact your network administrator'" FI=$finputs.admin_contact_info}
 
@@ -28,6 +27,7 @@
   {form_checkbox title="Internal Domain Name" label="Use the name on SSL certificate" FI=$finputs.usessl_cn}
 
   {form_checkbox title="Internal Domain Name2" FI=$finputs.usessl_cn2}
+  {form_checkbox label="Internal Domain Name3" FI=$finputs.usessl_cn3}
 
   {form_submit}
 </form>
