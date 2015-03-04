@@ -1,4 +1,5 @@
 <?php
+require_once 'FormInput.php';
 
 class BaseHTMLHandler
 {
@@ -53,9 +54,11 @@ class BaseHTMLHandler
 
 class TextHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$style,$name,$value)
+	function output($params,$format,FormInput $fi)
 	{
-		$format = $style['text'];
+		$name  = $fi->name;
+		$value = $fi->value;
+
 		$attr = $this->gen_input_attr("text",$params,$name,$value);
 		$html = sprintf($format, $attr);
 		return $html;
@@ -64,9 +67,11 @@ class TextHTMLHandler extends BaseHTMLHandler
 
 class CheckboxHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$style,$name,$value,$option_values)
+	function output($params,$format,FormInput $fi)
 	{
-		$format = $style['checkbox'];
+		$name  = $fi->name;
+		$value = $fi->value;
+		$option_values = $fi->option_values;
 
 		$attr = $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
 		if( $value === 1 ) $attr.= " checked";
@@ -79,9 +84,11 @@ class CheckboxHTMLHandler extends BaseHTMLHandler
 
 class RadioHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$style,$name,$value,$option_values)
+	function output($params,$format,FormInput $fi)
 	{
-		$format = $style['radio'];
+		$name  = $fi->name;
+		$value = $fi->value;
+		$option_values = $fi->option_values;
 
 		$options = $option_values;
 		$option_labels = explode(';', @$params["label"]);
@@ -108,9 +115,11 @@ class RadioHTMLHandler extends BaseHTMLHandler
 
 class SelectHTMLHandler extends BaseHTMLHandler
 {
-	function output($params,$style,$name,$value,$option_values)
+	function output($params,$format,FormInput $fi)
 	{
-		$format = $style['select'];
+		$name  = $fi->name;
+		$value = $fi->value;
+		$option_values = $fi->option_values;
 
 		$options = $option_values;
 		$option_labels = explode(';', @$params["label"]);

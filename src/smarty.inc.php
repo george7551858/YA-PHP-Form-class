@@ -1,6 +1,7 @@
 <?php
 require_once '../vendor/autoload.php';
 require_once 'FI_Style.php';
+require_once 'HTMLHandler.php';
 
 $smarty = new Smarty();
 
@@ -38,27 +39,43 @@ function output($title_html, $input_html, $anno_html, $forminput_style)
 	return sprintf($format, $title_html, $input_html, $anno_html);
 }
 
+function get_HTML_builder($type)
+{
+	$className = ucfirst(strtolower($type)).'HTMLHandler';
+	if (class_exists($className)) {
+		return new $className();
+	}
+}
+
 function smarty_function_input($params, $smarty)
 {
 	require_once(SMARTY_PLUGINS_DIR . 'shared.escape_special_chars.php');
 
-	$forminput = $params["FI"];
+	$fi = $params["FI"];
 	unset($params["FI"]);
 
-	$forminput_style = FI_Style::create($smarty);
+	if( ! isset($params['id']) ) $params['id'] = $fi->name;
 
-	$input_html = $forminput->html($params,$forminput_style);
+	$fi_html_builder = get_HTML_builder($fi->type);
+	$style = $smarty->getTemplateVars('STYLE');
 
-	list($title_html, $anno_html) = gen_title_anno($params,$forminput_style);
+	$fi_style = FI_Style::create($style);
+	$fi_format = $fi_style[$fi->type];
 
-	return output($title_html, $input_html, $anno_html,$forminput_style);
+
+	$input_html = $fi_html_builder->output($params,$fi_format,$fi);
+
+	list($title_html, $anno_html) = gen_title_anno($params,$fi_style);
+
+	return output($title_html, $input_html, $anno_html,$fi_style);
 }
 
 function smarty_function_submit($params, $smarty)
 {
-	$forminput_style = FI_Style::create($smarty);
+	$style = $smarty->getTemplateVars('STYLE');
+	$fi_style = FI_Style::create($style);
 
-	$format = $forminput_style['submit'];
+	$format = $fi_style['submit'];
 	return $format;
 }
 

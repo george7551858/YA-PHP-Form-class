@@ -1,19 +1,22 @@
 <?php
 
-require_once 'HTMLHandler.php';
 
 class FormInput
 {
 	public $name;
 	public $value;
+	public $type;
+	public $option_values;
+
 	protected $curd_handler;
-	protected $html_handler;
-	public function __construct($name, $file_path ,$curd_handler=NULL,$html_handler=NULL)
+
+	public function __construct($name, $file_path, $options=NULL,$curd_handler=NULL)
 	{
 		$this->name = $name;
+		$this->option_values = $options;
 		$this->curd_handler = ($curd_handler) ? $curd_handler : new BaseCURDHandler;
-		$this->html_handler = ($html_handler) ? $html_handler : new BaseHTMLHandler;
-
+		
+		$this->type = strtolower(substr(get_class($this), 10));
 		$this->value = $this->curd_handler->init($file_path);
 	}
 
@@ -28,67 +31,28 @@ class FormInput
 		if( is_null($value) ) $value = $this->value;
 		$this->curd_handler->update($value);
 	}
-	public function html(&$params,$style)
-	{
-		if( ! isset($params['id']) ) $params['id'] = $this->name;
-		return $this->html_handler->output($params,$style,$this->name,$this->value);
-	}
-
 }
 
 class FormInput_Text extends FormInput
 {
-	public function __construct($name, $file_path,$curd_handler=NULL,$html_handler=NULL)
-	{
-		$html_handler = ($html_handler) ? $html_handler : new TextHTMLHandler;
-		parent::__construct($name, $file_path,$curd_handler,$html_handler);
-	}
 }
 
-
-class FormInput_Options extends FormInput
+class FormInput_Checkbox extends FormInput
 {
-	public $option_values = array();
-	public function __construct($name, $file_path, $option_values,$curd_handler=NULL,$html_handler=NULL)
-	{
-		$this->option_values = $option_values;
-
-		parent::__construct($name, $file_path ,$curd_handler,$html_handler);
-	}
-	public function html(&$params,$style)
-	{
-		if( ! isset($params['id']) ) $params['id'] = $this->name;
-		return $this->html_handler->output($params,$style,$this->name,$this->value,$this->option_values);
-	}
-}
-
-class FormInput_Checkbox extends FormInput_Options
-{
-	public function __construct($name, $file_path, $option_values,$curd_handler=NULL,$html_handler=NULL)
+	public function __construct($name, $file_path, $options,$curd_handler=NULL)
 	{
 		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler;
-		$curd_handler->option_values = $option_values;
-		$html_handler = ($html_handler) ? $html_handler : new CheckboxHTMLHandler;
-		parent::__construct($name, $file_path, $option_values,$curd_handler,$html_handler);
+		$curd_handler->option_values = $options;
+		parent::__construct($name, $file_path, $options,$curd_handler);
 	}
 }
 
-class FormInput_Radio extends FormInput_Options
+class FormInput_Radio extends FormInput
 {
-	public function __construct($name, $file_path, $option_values,$curd_handler=NULL,$html_handler=NULL)
-	{
-		$html_handler = ($html_handler) ? $html_handler : new RadioHTMLHandler;
-		parent::__construct($name, $file_path, $option_values,$curd_handler,$html_handler);
-	}
 }
 
-class FormInput_Select extends FormInput_Options
+class FormInput_Select extends FormInput
 {
-	public function __construct($name, $file_path, $option_values,$curd_handler=NULL,$html_handler=NULL)
-	{
-		$html_handler = ($html_handler) ? $html_handler : new SelectHTMLHandler;
-		parent::__construct($name, $file_path, $option_values,$curd_handler,$html_handler);
-	}
 }
 
 class BaseCURDHandler

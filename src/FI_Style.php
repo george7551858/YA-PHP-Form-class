@@ -49,14 +49,13 @@ class FI_Style
 			"submit" => '<div class="form-group"><div class="col-sm-offset-3 col-sm-9"><button type="submit" class="btn btn-default">Submit</button></div></div>'
 		),
 	);
-	public static function create($smarty)
+	public static function create($style)
 	{
-		$type = $smarty->getTemplateVars('STYLE');
-		$type = ($type) ? strtolower($type) : "default";
+		$style = ($style) ? strtolower($style) : "default";
 
 		$default = self::$style_pool['default'];
 		$ret = array();
-		switch ($type) {
+		switch ($style) {
 			case "bootstrap3__v":
 				$ret = self::$style_pool['bootstrap3__v'];
 				break;
