@@ -7,14 +7,15 @@ class FormInput
 	public $name;
 	public $value;
 	public $type;
-	public $option_values;
+	public $properties;
+	public $isChanged;
 
 	protected $curd_handler;
 
-	public function __construct($name, $file_path, $options=NULL,BaseCURDHandler $curd_handler=NULL)
+	public function __construct($name, $file_path, $properties=NULL,BaseCURDHandler $curd_handler=NULL)
 	{
 		$this->name = $name;
-		$this->option_values = $options;
+		$this->properties = $properties;
 		$this->curd_handler = ($curd_handler) ? $curd_handler : new BaseCURDHandler;
 		
 		$this->type = strtolower(substr(get_class($this), 10));
@@ -24,13 +25,16 @@ class FormInput
 	public function load_post()
 	{
 		$tmp_value = $this->curd_handler->get_post_value($this->name);
-		if( is_null($tmp_value) ) return;
+		if( is_null($tmp_value) || $tmp_value === $this->value ) return;
+		$this->isChanged = TRUE;
 		$this->value = $tmp_value;
 	}
 	public function save($value=NULL)
 	{
 		if( is_null($value) ) $value = $this->value;
-		$this->curd_handler->update($value);
+		if ($this->isChanged) {
+			$this->curd_handler->update($value);
+		}
 	}
 }
 
@@ -40,11 +44,11 @@ class FormInput_Text extends FormInput
 
 class FormInput_Checkbox extends FormInput
 {
-	public function __construct($name, $file_path, $options,CheckboxCURDHandler $curd_handler=NULL)
+	public function __construct($name, $file_path, $properties,CheckboxCURDHandler $curd_handler=NULL)
 	{
 		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler;
-		$curd_handler->option_values = $options;
-		parent::__construct($name, $file_path, $options,$curd_handler);
+		$curd_handler->option_values = $properties['options'];
+		parent::__construct($name, $file_path, $properties,$curd_handler);
 	}
 }
 
