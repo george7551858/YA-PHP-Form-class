@@ -12,17 +12,10 @@ class BaseHTMLHandler
 		return $string;
 	}
 
-	function gen_input_attr($type,$params,$name,$value,$option_values="")
+	function gen_input_attr($params,$name,$option_values="")
 	{
 		$attr = array();
 		$attr["name"] = $name;
-		
-		if ($type === "checkbox") {
-			$attr["value"] = $option_values[1];
-		}
-		else if ($type === "text") {
-			$attr["value"] = $value;
-		}
 
 		foreach ($params as $_key => $_val) {
 			switch ($_key) {
@@ -59,7 +52,9 @@ class TextHTMLHandler extends BaseHTMLHandler
 		$name  = $fi->name;
 		$value = $fi->value;
 
-		$attr = $this->gen_input_attr("text",$params,$name,$value);
+		$attr = $this->gen_input_attr($params,$name);
+		$attr.= ' value="'. $this->escape_special_chars($value) .'"';
+
 		$html = sprintf($format, $attr);
 		return $html;
 	}
@@ -73,8 +68,10 @@ class CheckboxHTMLHandler extends BaseHTMLHandler
 		$value = $fi->value;
 		$option_values = $fi->option_values;
 
-		$attr = $this->gen_input_attr("checkbox",$params,$name,$value,$option_values);
-		if( $value === 1 ) $attr.= " checked";
+		$attr = $this->gen_input_attr($params,$name,$option_values);
+		$attr.= ' value="'. $this->escape_special_chars(CHECKBOX_YES) .'"';
+
+		if( $value === $option_values[1] ) $attr.= " checked";
 
 		$label = $this->escape_special_chars(@$params['label']);
 		$html = sprintf($format, $attr, $label);
@@ -135,7 +132,7 @@ class SelectHTMLHandler extends BaseHTMLHandler
 			$html.= sprintf($format["repeat"], $str, $label);
 		}
 
-		$attr = $this->gen_input_attr("select",$params,$name,$value,$option_values);
+		$attr = $this->gen_input_attr($params,$name,$option_values);
 		$html = sprintf($format["wrapper"], $attr, $html);
 
 		return $html;

@@ -53,7 +53,7 @@ $finputs = array(
 	'SNMP_en' => 
 		new FormInput_Radio("SNMP_en","$db_path/snmp/snmp_server",array("Enabled","Disabled")),
 	'suspend_message' => 
-		new FormInput_Text("suspend_message",array("$db_path/vlan/suspend_message","$db_path/config/suspend_page.html"),new SuspendMessageCURDHandler),
+		new FormInput_Text("suspend_message",array("$db_path/vlan/suspend_message","$db_path/config/suspend_page.html"),NULL,new SuspendMessageCURDHandler),
 );
 
 

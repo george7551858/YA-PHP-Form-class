@@ -1,4 +1,5 @@
 <?php
+define('CHECKBOX_YES', 'yes');
 
 
 class FormInput
@@ -10,7 +11,7 @@ class FormInput
 
 	protected $curd_handler;
 
-	public function __construct($name, $file_path, $options=NULL,$curd_handler=NULL)
+	public function __construct($name, $file_path, $options=NULL,BaseCURDHandler $curd_handler=NULL)
 	{
 		$this->name = $name;
 		$this->option_values = $options;
@@ -39,7 +40,7 @@ class FormInput_Text extends FormInput
 
 class FormInput_Checkbox extends FormInput
 {
-	public function __construct($name, $file_path, $options,$curd_handler=NULL)
+	public function __construct($name, $file_path, $options,CheckboxCURDHandler $curd_handler=NULL)
 	{
 		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler;
 		$curd_handler->option_values = $options;
@@ -92,22 +93,12 @@ class BaseCURDHandler
 class CheckboxCURDHandler extends BaseCURDHandler
 {
 	public $option_values;
-	public function update($chk_bool)
-	{
-		$value = $this->option_values[$chk_bool];
-		file_put_contents($this->storage, $value);
-	}
-	public function read()
-	{
-		$value = file_get_contents($this->storage);
-		$chk_bool = ($value === $this->option_values[1]) ? 1 : 0;
-		return $chk_bool;
-	}
 	public function get_post_value($name)
 	{
 		$value = parent::get_post_value($name);
-		$chk_bool = ($value === $this->option_values[1]) ? 1 : 0;
-		return $chk_bool;
+		$chk_bool = ($value === CHECKBOX_YES) ? 1 : 0;
+
+		return $this->option_values[$chk_bool];
 	}
 }
 
