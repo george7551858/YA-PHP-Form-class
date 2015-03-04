@@ -28,8 +28,16 @@ class SuspendMessageCURDHandler extends BaseCURDHandler
 	}
 }
 
-
-
+$device_name_limit = array(
+	"filter"=>FILTER_CALLBACK,
+	"options"=>function ($str)
+	{
+		if (trim($str) == '') {
+			return false;
+		}
+		return $str;
+	}
+);
 
 
 $finputs = array(
@@ -56,7 +64,9 @@ $finputs = array(
 			)
 		),
 	'device_name' => 
-		new FormInput_Text("device_name","$db_path/device_name"),
+		new FormInput_Text("device_name","$db_path/device_name",
+			array('limit'=>$device_name_limit)
+		),
 	'HOMEPAGE_en' => 
 		new FormInput_Radio("HOMEPAGE_en","$db_path/homepage_redirect_enable",
 			array(
@@ -64,7 +74,9 @@ $finputs = array(
 			)
 		),
 	'succeed_page' => 
-		new FormInput_Text("succeed_page","$db_path/succeed_page"),
+		new FormInput_Text("succeed_page","$db_path/succeed_page",
+			array('limit'=>array('filter'=>FILTER_VALIDATE_URL))
+		),
 	'Skip_portal_popup' => 
 		new FormInput_Text("Skip_portal_popup","$db_path/Skip_portal_popup"),
 	'billlog_ip' => 
@@ -78,7 +90,8 @@ $finputs = array(
 	'suspend_message' => 
 		new FormInput_Text("suspend_message",
 			array("$db_path/vlan/suspend_message","$db_path/config/suspend_page.html"),
-			NULL,new SuspendMessageCURDHandler),
+			array(),
+			new SuspendMessageCURDHandler),
 );
 
 
