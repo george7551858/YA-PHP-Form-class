@@ -11,6 +11,7 @@
 <body class="container">
 
 {$data['test']}
+{$error}
 
 <form class="form-horizontal" method="post">
   {assign var="STYLE" value="default"}

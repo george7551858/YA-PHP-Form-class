@@ -16,6 +16,7 @@ class FormInput
 	{
 		$this->name = $name;
 		$this->properties = $properties;
+		$this->limit = (@$properties['limit']) ? $properties['limit'] : array("filter"=>FILTER_DEFAULT);
 		$this->curd_handler = ($curd_handler) ? $curd_handler : new BaseCURDHandler;
 		
 		$this->type = strtolower(substr(get_class($this), 10));
@@ -25,7 +26,12 @@ class FormInput
 	public function load_post()
 	{
 		$tmp_value = $this->curd_handler->get_post_value($this->name);
-		if( is_null($tmp_value) || $tmp_value === $this->value ) return;
+		if ( $tmp_value === $this->value ) return;
+
+		$tmp_value_array = filter_var_array(array("fi"=>$tmp_value), array("fi"=>$this->limit));
+		$tmp_value = $tmp_value_array['fi'];
+		if ( $tmp_value === FALSE ) return $this->name;
+
 		$this->isChanged = TRUE;
 		$this->value = $tmp_value;
 	}
@@ -47,7 +53,7 @@ class FormInput_Checkbox extends FormInput
 	public function __construct($name, $file_path, $properties,CheckboxCURDHandler $curd_handler=NULL)
 	{
 		$curd_handler = ($curd_handler) ? $curd_handler : new CheckboxCURDHandler;
-		$curd_handler->option_values = $properties['options'];
+		$curd_handler->option_values = $properties['option_elements'];
 		parent::__construct($name, $file_path, $properties,$curd_handler);
 	}
 }

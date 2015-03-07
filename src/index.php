@@ -30,8 +30,8 @@ class SuspendMessageCURDHandler extends BaseCURDHandler
 
 $device_name_limit = array(
 	"filter"=>FILTER_CALLBACK,
-	"options"=>function ($str)
-	{
+	"options"=>
+	function ($str) {
 		if (trim($str) == '') {
 			return false;
 		}
@@ -48,19 +48,19 @@ $finputs = array(
 	'httpsCert' => 
 		new FormInput_Select("httpsCert","$db_path/httpd_cert_idx",
 			array(
-				'options'=>array("Default CERT"=>"0","AAA"=>"1")
+				'option_elements'=>array("Default CERT"=>"0","AAA"=>"1")
 			)
 		),
 	'SSL' => 
 		new FormInput_Radio("SSL","$db_path/SSL",
 			array(
-				'options'=>array("Enabled","Disabled","Secure")
+				'option_elements'=>array("Enabled","Disabled","Secure")
 			)
 		),
 	'useSSLCN' => 
 		new FormInput_Checkbox("useSSLCN","$db_path/useSSLCN",
 			array(
-				'options'=>array(0=>"Disabled",1=>"Enabled")
+				'option_elements'=>array(0=>"Disabled",1=>"Enabled")
 			)
 		),
 	'device_name' => 
@@ -70,7 +70,7 @@ $finputs = array(
 	'HOMEPAGE_en' => 
 		new FormInput_Radio("HOMEPAGE_en","$db_path/homepage_redirect_enable",
 			array(
-				'options'=>array("Enabled","Disabled","None")
+				'option_elements'=>array("Enabled","Disabled","None")
 			)
 		),
 	'succeed_page' => 
@@ -84,7 +84,7 @@ $finputs = array(
 	'SNMP_en' => 
 		new FormInput_Radio("SNMP_en","$db_path/snmp/snmp_server",
 			array(
-				'options'=>array("Enabled","Disabled")
+				'option_elements'=>array("Enabled","Disabled")
 			)
 		),
 	'suspend_message' => 
@@ -98,15 +98,20 @@ $finputs = array(
 
 // print_r($finputs);
 
+$error = array();
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 	foreach ($finputs as $name => $finput) {
-		$finput->load_post();
+		$errorName = $finput->load_post();
+		if ($errorName) $error []= $errorName;
 	}
-	foreach ($finputs as $name => $finput) {
-		$finput->save();
+	if ( empty($error) ) {
+		foreach ($finputs as $name => $finput) {
+			$finput->save();
+		}
 	}
 }
 
+$smarty->assign("error",json_encode($error));
 $smarty->assign("finputs",$finputs);
 
 $smarty->assign("data",array("title"=>"cccccc","test"=>date(DATE_RFC2822)));

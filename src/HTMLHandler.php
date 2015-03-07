@@ -66,7 +66,7 @@ class CheckboxHTMLHandler extends BaseHTMLHandler
 	{
 		$name  = $fi->name;
 		$value = $fi->value;
-		$option_values = $fi->properties['option_values'];
+		$option_values = $fi->properties['option_elements'];
 
 		$attr = $this->gen_input_attr($params,$name,$option_values);
 		$attr.= ' value="'. $this->escape_special_chars(CHECKBOX_YES) .'"';
@@ -85,7 +85,7 @@ class RadioHTMLHandler extends BaseHTMLHandler
 	{
 		$name  = $fi->name;
 		$value = $fi->value;
-		$option_values = $fi->properties['options'];
+		$option_values = $fi->properties['option_elements'];
 
 		$options = $option_values;
 		$option_labels = explode(';', @$params["label"]);
@@ -116,7 +116,7 @@ class SelectHTMLHandler extends BaseHTMLHandler
 	{
 		$name  = $fi->name;
 		$value = $fi->value;
-		$option_values = $fi->properties['options'];
+		$option_values = $fi->properties['option_elements'];
 
 		$options = $option_values;
 		$option_labels = explode(';', @$params["label"]);
